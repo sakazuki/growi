@@ -212,6 +212,17 @@
         "oidc": "OIDC の設定方法"
       }
     },
+    "cognito": {
+      "enable_cognito": "Congnito を有効にする",
+      "name": "AWS Cognito",
+      "client_id": "クライアントID",
+      "user_pool_id": "ユーザプールID",
+      "region": "リージョン",
+      "how_to": "Cognitoの設定方法",
+      "register_1": "reg1",
+      "register_2": "reg2",
+      "register_3": "reg3"
+    },
     "form_item_name": {
       "entryPoint": "エントリーポイント",
       "issuer": "発行者",

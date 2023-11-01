@@ -146,6 +146,7 @@
     "openid-client": "^5.4.0",
     "p-retry": "^4.0.0",
     "passport": "^0.6.0",
+    "passport-cognito": "^0.2.2",
     "passport-github": "^1.1.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-ldapauth": "^3.0.1",

@@ -37,7 +37,7 @@ const validator = {
   authenticationSetting: [
     body('isEnabled').if(value => value != null).isBoolean(),
     body('authId').isString().isIn([
-      'local', 'ldap', 'saml', 'oidc', 'google', 'github',
+      'local', 'ldap', 'saml', 'oidc', 'google', 'github', 'cognito',
     ]),
   ],
   localSetting: [
@@ -102,6 +102,12 @@ const validator = {
   githubOAuth: [
     body('githubClientId').if(value => value != null).isString(),
     body('githubClientSecret').if(value => value != null).isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
+  ],
+  cognitoAuth: [
+    body('cognitoClientId').if(value => value != null).isString(),
+    body('cognitoUserPoolId').if(value => value != null).isString(),
+    body('cognitoRegion').if(value => value != null).isString(),
     body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
   ],
 };
@@ -378,6 +384,7 @@ module.exports = (crowi) => {
         isOidcEnabled: await configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
         isGoogleEnabled: await configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGitHubEnabled: await configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
+        isCognitoEnabled: await configManager.getConfig('crowi', 'security:passport-cognito:isEnabled'),
       },
       ldapAuth: {
         serverUrl: await configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
@@ -445,6 +452,12 @@ module.exports = (crowi) => {
       githubOAuth: {
         githubClientId: await configManager.getConfig('crowi', 'security:passport-github:clientId'),
         githubClientSecret: await configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
+      },
+      cognitoAuth: {
+        cognitoClientId:  await configManager.getConfig('crowi', 'security:passport-cognito:clientId'),
+        cognitoUserPoolId: await configManager.getConfig('crowi', 'security:passport-cognito:userPoolId'),
+        cognitoRegion: await configManager.getConfig('crowi', 'security:passport-cognito:region'),
         isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       },
     };
@@ -552,6 +565,13 @@ module.exports = (crowi) => {
             break;
           }
           parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GITHUB_DISABLED;
+          break;
+        case 'cognito':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_COGNITO_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_COGNITO_DISABLED;
           break;
       }
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -1163,6 +1183,57 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating githubOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-githubOAuth-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/cognito:
+   *      put:
+   *        tags: [SecuritySetting, apiv3]
+   *        description: Update cognito auth
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/CognitoAuthSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to Cognito auth
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CognitoAuthSetting'
+   */
+  router.put('/cognito', loginRequiredStrictly, adminRequired, addActivity, validator.cognitoAuth, apiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-cognito:clientId': req.body.cognitoClientId,
+      'security:passport-cognito:userPoolId': req.body.cognitoUserPoolId,
+      'security:passport-cognito:region': req.body.cognitoRegion,
+      'security:passport-cognito:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+    };
+
+    try {
+      await updateAndReloadStrategySettings('cognito', requestParams);
+
+      const securitySettingParams = {
+        cognitoClientId: await configManager.getConfig('crowi', 'security:passport-cognito:clientId'),
+        cognitoUserPoolId: await configManager.getConfig('crowi', 'security:passport-cognito:userPoolId'),
+        cognitoRegion: await configManager.getConfig('crowi', 'security:passport-cognito:region'),
+        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-cognito:isSameUsernameTreatedAsIdenticalUser'),
+      };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_GITHUB_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      // reset strategy
+      await crowi.passportService.resetCognitoStrategy();
+      const msg = 'Error occurred in updating cognito';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-cognito-failed'));
     }
   });
 

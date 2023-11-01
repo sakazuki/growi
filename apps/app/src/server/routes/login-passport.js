@@ -490,6 +490,62 @@ module.exports = function(crowi, app) {
     });
   };
 
+  const loginWithCognito = async function(req, res, next) {
+    if (!passportService.isCognitoStrategySetup) {
+      debug('CognitoStrategy has not been set up');
+      const error = new ExternalAccountLoginError('message.strategy_has_not_been_set_up', { strategy: 'CognitoStrategy' });
+      return next(error);
+    }
+
+    if (!req.form.isValid) {
+      return next(req.form.errors);
+    }
+    req.body = req.body.loginForm;
+    const providerId = 'cognito';
+    const strategyName = 'cognito';
+    let cognitoAccountInfo;
+
+    try {
+      cognitoAccountInfo = await promisifiedPassportAuthentication(strategyName, req, res);
+    }
+    catch (err) {
+      debug(err.message);
+      return next(err);
+    }
+
+    const userInfo = {
+      id: cognitoAccountInfo.sub,
+      username: cognitoAccountInfo.username,
+      name: cognitoAccountInfo.username,
+      email: cognitoAccountInfo.email,
+    };
+
+    let externalAccount;
+    try {
+      externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
+    }
+    catch (error) {
+      return next(error);
+    }
+
+    // just in case the returned value is null or undefined
+    if (externalAccount == null) {
+      return next(new ErrorV3('message.external_account_not_exist'));
+    }
+
+    const user = await externalAccount.getPopulatedUser();
+
+    // login
+    await req.logIn(user, (err) => {
+      if (err) {
+        debug(err.message);
+        return next(err);
+      }
+
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_COGNITO, true);
+    });
+  };
+
   const loginWithOidc = function(req, res, next) {
     if (!passportService.isOidcStrategySetup) {
       debug('OidcStrategy has not been set up');
@@ -613,6 +669,7 @@ module.exports = function(crowi, app) {
     loginWithLocal,
     loginWithGoogle,
     loginWithGitHub,
+    loginWithCognito,
     loginWithOidc,
     loginWithSaml,
     loginPassportGoogleCallback,

@@ -5,6 +5,7 @@ import luceneQueryParser from 'lucene-query-parser';
 import { Strategy as OidcStrategy, Issuer as OIDCIssuer, custom } from 'openid-client';
 import pRetry from 'p-retry';
 import passport from 'passport';
+import { Strategy as CognitoStrategy } from 'passport-cognito';
 import { Strategy as GitHubStrategy } from 'passport-github';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import LdapStrategy from 'passport-ldapauth';
@@ -70,6 +71,11 @@ class PassportService implements S2sMessageHandlable {
   isSamlStrategySetup = false;
 
   /**
+   * the flag whether CognitoStrategy is set up successfully
+   */
+  isCognitoStrategySetup = false;
+
+  /**
    * the flag whether serializer/deserializer are set up successfully
    */
   isSerializerSetup = false;
@@ -110,6 +116,10 @@ class PassportService implements S2sMessageHandlable {
     github: {
       setup: 'setupGitHubStrategy',
       reset: 'resetGitHubStrategy',
+    },
+    cognito: {
+      setup: 'setupCognitoStrategy',
+      reset: 'resetCognitoStrategy',
     },
   };
 
@@ -175,6 +185,7 @@ class PassportService implements S2sMessageHandlable {
     if (this.isOidcStrategySetup) { setupStrategies.push('oidc') }
     if (this.isGoogleStrategySetup) { setupStrategies.push('google') }
     if (this.isGitHubStrategySetup) { setupStrategies.push('github') }
+    if (this.isCognitoStrategySetup) { setupStrategies.push('cognito') }
 
     return setupStrategies;
   }
@@ -797,6 +808,46 @@ class PassportService implements S2sMessageHandlable {
       }
     }
     return missingRequireds;
+  }
+
+  setupCognitoStrategy() {
+    this.resetCognitoStrategy();
+
+    const { configManager } = this.crowi;
+    const isCognitoEnabled = configManager.getConfig('crowi', 'security:passport-cognito:isEnabled');
+
+    // when disabled
+    if (!isCognitoEnabled) {
+      return;
+    }
+
+    logger.debug('CognitoStrategy: setting up..');
+    passport.use(
+      new CognitoStrategy(
+        {
+          userPoolId: configManager.getConfig('crowi', 'security:passport-cognito:userPoolId'),
+          clientId: configManager.getConfig('crowi', 'security:passport-cognito:clientId'),
+          region: configManager.getConfig('crowi', 'security:passport-cognito:region'),
+        },
+        (accessToken, idToken, refreshToken, profile, done) => {
+          logger.debug(accessToken, idToken, refreshToken, profile, done);
+          if (profile) {
+            return done(null, profile);
+          }
+
+          return done(null, false);
+        },
+      ),
+    );
+
+    this.isCognitoStrategySetup = true;
+    logger.debug('CognitoStrategy: setup is done');
+  }
+
+  resetCognitoStrategy() {
+    logger.debug('CognitoStrategy: reset');
+    passport.unuse('cognito');
+    this.isCognitoStrategySetup = false;
   }
 
   /**

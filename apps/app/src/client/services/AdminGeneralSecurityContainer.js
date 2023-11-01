@@ -45,6 +45,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isOidcEnabled: false,
       isGoogleEnabled: false,
       isGitHubEnabled: false,
+      isCognitoEnabled: false,
       setupStrategies: [],
       disableLinkSharing: false,
       shareLinks: [],
@@ -84,6 +85,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isOidcEnabled: generalAuth.isOidcEnabled,
       isGoogleEnabled: generalAuth.isGoogleEnabled,
       isGitHubEnabled: generalAuth.isGitHubEnabled,
+      isCognitoEnabled: generalAuth.isCognitoEnabled,
     });
   }
 
@@ -336,6 +338,13 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   async switchIsGitHubOAuthEnabled() {
     this.switchAuthentication('isGitHubEnabled', 'github');
+  }
+
+  /**
+   * Switch GitHubOAuth enabled
+   */
+  async switchIsCognitoAuthEnabled() {
+    this.switchAuthentication('isCognitoEnabled', 'cognito');
   }
 
 }

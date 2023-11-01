@@ -7,6 +7,7 @@ import { TabContent, TabPane } from 'reactstrap';
 import CustomNav from '../../CustomNavigation/CustomNav';
 
 // import FacebookSecuritySetting from './FacebookSecuritySetting';
+import CognitoSecuritySetting from './CognitoSecuritySetting';
 import GitHubSecuritySetting from './GitHubSecuritySetting';
 import GoogleSecuritySetting from './GoogleSecuritySetting';
 import LdapSecuritySetting from './LdapSecuritySetting';
@@ -52,6 +53,10 @@ const SecurityManagementContents = () => {
       passport_github: {
         Icon: () => <i className="fa fa-github" />,
         i18n: 'GitHub',
+      },
+      passport_cognito: {
+        Icon: () => <i className="fa fa-amazon" />,
+        i18n: 'Cognito',
       },
       // passport_facebook: {
       //   Icon: () => <i className="fa fa-facebook" />,
@@ -113,6 +118,9 @@ const SecurityManagementContents = () => {
           </TabPane>
           <TabPane tabId="passport_github">
             {activeComponents.has('passport_github') && <GitHubSecuritySetting />}
+          </TabPane>
+          <TabPane tabId="passport_cognito">
+            {activeComponents.has('passport_cognito') && <CognitoSecuritySetting />}
           </TabPane>
           {/* <TabPane tabId="passport_facebook">
             {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />}
