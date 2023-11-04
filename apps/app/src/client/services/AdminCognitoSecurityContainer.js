@@ -29,7 +29,6 @@ export default class AdminCognitoSecurityContainer extends Container {
       // set dummy value tile for using suspense
       cognitoClientId: this.dummyCognitoClientId,
       cognitoUserPoolId: '',
-      cognitoRegion: '',
       isSameUsernameTreatedAsIdenticalUser: false,
       cognitoAttrMapUsername: '',
       cognitoAttrMapMail: '',
@@ -48,7 +47,6 @@ export default class AdminCognitoSecurityContainer extends Container {
       this.setState({
         cognitoClientId: cognitoAuth.cognitoClientId,
         cognitoUserPoolId: cognitoAuth.cognitoUserPoolId,
-        cognitoRegion: cognitoAuth.cognitoRegion,
         isSameUsernameTreatedAsIdenticalUser: cognitoAuth.isSameUsernameTreatedAsIdenticalUser,
         cognitoAttrMapUsername: cognitoAuth.cognitoAttrMapUsername,
         cognitoAttrMapMail: cognitoAuth.cognitoAttrMapMail,
@@ -84,13 +82,6 @@ export default class AdminCognitoSecurityContainer extends Container {
   }
 
   /**
-   * Change cognitoRegion
-   */
-  changeCognitoRegion(cognitoRegion) {
-    this.setState({ cognitoRegion });
-  }
-
-  /**
    * Switch isSameUsernameTreatedAsIdenticalUser
    */
   switchIsSameUsernameTreatedAsIdenticalUser() {
@@ -123,14 +114,13 @@ export default class AdminCognitoSecurityContainer extends Container {
    */
   async updateCognitoSetting() {
     const {
-      cognitoClientId, cognitoUserPoolId, cognitoRegion, isSameUsernameTreatedAsIdenticalUser,
+      cognitoClientId, cognitoUserPoolId, isSameUsernameTreatedAsIdenticalUser,
       cognitoAttrMapUsername, cognitoAttrMapMail, cognitoAttrMapName,
     } = this.state;
 
     let requestParams = {
       cognitoClientId,
       cognitoUserPoolId,
-      cognitoRegion,
       isSameUsernameTreatedAsIdenticalUser,
       cognitoAttrMapUsername,
       cognitoAttrMapMail,
@@ -144,7 +134,6 @@ export default class AdminCognitoSecurityContainer extends Container {
     this.setState({
       cognitoClientId: securitySettingParams.cognitoClientId,
       cognitoUserPoolId: securitySettingParams.cognitoUserPoolId,
-      congitoRegion: securitySettingParams.cognitoRegion,
       isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,
       cognitoAttrMapUsername: securitySettingParams.cognitoAttrMapUsername,
       cognitoAttrMapMail: securitySettingParams.cognitoAttrMapMail,

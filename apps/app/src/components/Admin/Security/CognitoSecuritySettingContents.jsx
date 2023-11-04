@@ -78,22 +78,6 @@ class CognitoSecurityManagementContents extends React.Component {
             <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row mb-5">
-              <label htmlFor="cognitoClientId" className="col-3 text-right py-2">{t('security_settings.cognito.client_id')}</label>
-              <div className="col-6">
-                <input
-                  className="form-control"
-                  type="text"
-                  name="cognitoClientId"
-                  value={adminCognitoSecurityContainer.state.cognitoClientId || ''}
-                  onChange={e => adminCognitoSecurityContainer.changeCognitoClientId(e.target.value)}
-                />
-                <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Use env var if empty', { env: 'AUTH_COGNITO_CLIENT_ID' }) }} />
-                </p>
-              </div>
-            </div>
-
-            <div className="row mb-5">
               <label htmlFor="cognitoUserPoolId" className="col-3 text-right py-2">{t('security_settings.cognito.user_pool_id')}</label>
               <div className="col-6">
                 <input
@@ -104,23 +88,25 @@ class CognitoSecurityManagementContents extends React.Component {
                   onChange={e => adminCognitoSecurityContainer.changeCognitoUserPoolId(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Use env var if empty', { env: 'AUTH_COGNITO_USER_POOL_ID' }) }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.cognito.user_pool_id_detail') }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="cognitoRegion" className="col-3 text-right py-2">{t('security_settings.cognito.region')}</label>
+              <label htmlFor="cognitoClientId" className="col-3 text-right py-2">{t('security_settings.cognito.client_id')}</label>
               <div className="col-6">
                 <input
                   className="form-control"
                   type="text"
-                  name="cognitoRegion"
-                  defaultValue={adminCognitoSecurityContainer.state.cognitoRegion || ''}
-                  onChange={e => adminCognitoSecurityContainer.changeCognitoRegion(e.target.value)}
+                  name="cognitoClientId"
+                  value={adminCognitoSecurityContainer.state.cognitoClientId || ''}
+                  onChange={e => adminCognitoSecurityContainer.changeCognitoClientId(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Use env var if empty', { env: 'AUTH_COGNITO_REGION' }) }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.cognito.client_id_detail') }} />
+                  <br />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.cognito.client_id_note') }} />
                 </p>
               </div>
             </div>
@@ -157,7 +143,7 @@ class CognitoSecurityManagementContents extends React.Component {
                 <input
                   className="form-control"
                   type="text"
-                  placeholder="Default: mail"
+                  placeholder="Default: email"
                   name="attrMapMail"
                   defaultValue={adminCognitoSecurityContainer.state.cognitoAttrMapMail || ''}
                   onChange={e => adminCognitoSecurityContainer.changeAttrMapMail(e.target.value)}

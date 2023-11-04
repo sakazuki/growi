@@ -11,6 +11,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import LdapStrategy from 'passport-ldapauth';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Profile, Strategy as SamlStrategy, VerifiedCallback } from 'passport-saml';
+import { split } from 'postcss/lib/list';
 import urljoin from 'url-join';
 
 import loggerFactory from '~/utils/logger';
@@ -839,12 +840,15 @@ class PassportService implements S2sMessageHandlable {
     }
 
     logger.debug('CognitoStrategy: setting up..');
+    const userPoolId = configManager.getConfig('crowi', 'security:passport-cognito:userPoolId');
+    const clientId = configManager.getConfig('crowi', 'security:passport-cognito:clientId');
+    const region = userPoolId.split('_')[0];
     passport.use(
       new CognitoStrategy(
         {
-          userPoolId: configManager.getConfig('crowi', 'security:passport-cognito:userPoolId'),
-          clientId: configManager.getConfig('crowi', 'security:passport-cognito:clientId'),
-          region: configManager.getConfig('crowi', 'security:passport-cognito:region'),
+          userPoolId,
+          clientId,
+          region,
         },
         (accessToken, idToken, refreshToken, profile, done) => {
           logger.debug(accessToken, idToken, refreshToken, profile, done);

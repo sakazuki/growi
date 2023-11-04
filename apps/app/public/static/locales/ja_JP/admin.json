@@ -213,15 +213,17 @@
       }
     },
     "cognito": {
-      "enable_cognito": "Congnito を有効にする",
+      "enable_cognito": "Amazon Congnito を有効にする",
       "name": "Amazon Cognito",
+      "user_pool_id": "ユーザープールID",
+      "user_pool_id_detail": "Amazon CognitoユーザープールのID",
       "client_id": "クライアントID",
-      "user_pool_id": "ユーザプールID",
-      "region": "リージョン",
+      "client_id_detail": "アプリケーションクライアントのID",
+      "client_id_note": "アプリケーションタイプはパブリッククライアントのみ指定可能です。クライアントシークレットを使うことはできません",
       "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
       "name_detail": "新規ユーザーの表示名に関連付ける属性",
       "mail_detail": "新規ユーザーのメールアドレスに関連付ける属性",
-      "updated_cognito": "Cognito設定 を更新しました"
+      "updated_cognito": "Amazon Cognito設定 を更新しました"
     },
     "form_item_name": {
       "entryPoint": "エントリーポイント",

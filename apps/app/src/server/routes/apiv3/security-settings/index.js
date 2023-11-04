@@ -105,10 +105,12 @@ const validator = {
     body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
   ],
   cognitoAuth: [
-    body('cognitoClientId').if(value => value != null).isString(),
     body('cognitoUserPoolId').if(value => value != null).isString(),
-    body('cognitoRegion').if(value => value != null).isString(),
+    body('cognitoClientId').if(value => value != null).isString(),
     body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
+    body('cognitoAttrMapUsername').if(value => value != null).isString(),
+    body('cognitoAttrMapMail').if(value => value != null).isString(),
+    body('cognitoAttrMapName').if(value => value != null).isString(),
   ],
 };
 
@@ -455,10 +457,12 @@ module.exports = (crowi) => {
         isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       },
       cognitoAuth: {
-        cognitoClientId:  await configManager.getConfig('crowi', 'security:passport-cognito:clientId'),
         cognitoUserPoolId: await configManager.getConfig('crowi', 'security:passport-cognito:userPoolId'),
-        cognitoRegion: await configManager.getConfig('crowi', 'security:passport-cognito:region'),
+        cognitoClientId:  await configManager.getConfig('crowi', 'security:passport-cognito:clientId'),
         isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
+        cognitoAttrMapUsername: await configManager.getConfig('crowi', 'security:passport-cognito:attrMapUsername'),
+        cognitoAttrMapMail: await configManager.getConfig('crowi', 'security:passport-cognito:attrMapMail'),
+        cognitoAttrMapName: await configManager.getConfig('crowi', 'security:passport-cognito:attrMapName'),
       },
     };
     return res.apiv3({ securityParams });
@@ -1209,22 +1213,26 @@ module.exports = (crowi) => {
    */
   router.put('/cognito', loginRequiredStrictly, adminRequired, addActivity, validator.cognitoAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'security:passport-cognito:clientId': req.body.cognitoClientId,
       'security:passport-cognito:userPoolId': req.body.cognitoUserPoolId,
-      'security:passport-cognito:region': req.body.cognitoRegion,
+      'security:passport-cognito:clientId': req.body.cognitoClientId,
       'security:passport-cognito:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+      'security:passport-cognito:attrMapUsername': req.body.cognitoAttrMapUsername,
+      'security:passport-cognito:attrMapMail': req.body.cognitoAttrMapMail,
+      'security:passport-cognito:attrMapName': req.body.cognitoAttrMapName,
     };
 
     try {
       await updateAndReloadStrategySettings('cognito', requestParams);
 
       const securitySettingParams = {
-        cognitoClientId: await configManager.getConfig('crowi', 'security:passport-cognito:clientId'),
         cognitoUserPoolId: await configManager.getConfig('crowi', 'security:passport-cognito:userPoolId'),
-        cognitoRegion: await configManager.getConfig('crowi', 'security:passport-cognito:region'),
+        cognitoClientId: await configManager.getConfig('crowi', 'security:passport-cognito:clientId'),
         isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-cognito:isSameUsernameTreatedAsIdenticalUser'),
+        cognitoAttrMapUsername: await configManager.getConfig('crowi', 'security:passport-cognito:attrMapUsername'),
+        cognitoAttrMapMail: await configManager.getConfig('crowi', 'security:passport-cognito:attrMapMail'),
+        cognitoAttrMapName: await configManager.getConfig('crowi', 'security:passport-cognito:attrMapName'),
       };
-      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_GITHUB_UPDATE };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_COGNITO_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
