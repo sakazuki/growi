@@ -31,6 +31,9 @@ export default class AdminCognitoSecurityContainer extends Container {
       cognitoUserPoolId: '',
       cognitoRegion: '',
       isSameUsernameTreatedAsIdenticalUser: false,
+      cognitoAttrMapUsername: '',
+      cognitoAttrMapMail: '',
+      cognitoAttrMapName: '',
     };
 
   }
@@ -47,6 +50,9 @@ export default class AdminCognitoSecurityContainer extends Container {
         cognitoUserPoolId: cognitoAuth.cognitoUserPoolId,
         cognitoRegion: cognitoAuth.cognitoRegion,
         isSameUsernameTreatedAsIdenticalUser: cognitoAuth.isSameUsernameTreatedAsIdenticalUser,
+        cognitoAttrMapUsername: cognitoAuth.cognitoAttrMapUsername,
+        cognitoAttrMapMail: cognitoAuth.cognitoAttrMapMail,
+        cognitoAttrMapName: cognitoAuth.cognitoAttrMapName,
       });
     }
     catch (err) {
@@ -66,22 +72,22 @@ export default class AdminCognitoSecurityContainer extends Container {
   /**
    * Change cognitoClientId
    */
-  changeCognitoClientId(value) {
-    this.setState({ cognitoClientId: value });
+  changeCognitoClientId(cognitoClientId) {
+    this.setState({ cognitoClientId });
   }
 
   /**
    * Change cognitoUserPoolId
    */
-  changeCognitoUserPoolId(value) {
-    this.setState({ cognitoUserPoolId: value });
+  changeCognitoUserPoolId(cognitoUserPoolId) {
+    this.setState({ cognitoUserPoolId });
   }
 
   /**
    * Change cognitoRegion
    */
-  changeCognitoRegion(value) {
-    this.setState({ cognitoRegion: value });
+  changeCognitoRegion(cognitoRegion) {
+    this.setState({ cognitoRegion });
   }
 
   /**
@@ -92,15 +98,43 @@ export default class AdminCognitoSecurityContainer extends Container {
   }
 
   /**
+   * Change cognitoAttrMapUsername
+   */
+  changeAttrMapUsername(cognitoAttrMapUsername) {
+    this.setState({ cognitoAttrMapUsername });
+  }
+
+  /**
+   * Change cognitoAttrMapMail
+   */
+  changeAttrMapMail(cognitoAttrMapMail) {
+    this.setState({ cognitoAttrMapMail });
+  }
+
+  /**
+   * Change cognitoAttrMapName
+   */
+  changeAttrMapName(cognitoAttrMapName) {
+    this.setState({ cognitoAttrMapName });
+  }
+
+  /**
    * Update cognitoSetting
    */
   async updateCognitoSetting() {
     const {
       cognitoClientId, cognitoUserPoolId, cognitoRegion, isSameUsernameTreatedAsIdenticalUser,
+      cognitoAttrMapUsername, cognitoAttrMapMail, cognitoAttrMapName,
     } = this.state;
 
     let requestParams = {
-      cognitoClientId, cognitoUserPoolId, cognitoRegion, isSameUsernameTreatedAsIdenticalUser,
+      cognitoClientId,
+      cognitoUserPoolId,
+      cognitoRegion,
+      isSameUsernameTreatedAsIdenticalUser,
+      cognitoAttrMapUsername,
+      cognitoAttrMapMail,
+      cognitoAttrMapName,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
@@ -112,6 +146,9 @@ export default class AdminCognitoSecurityContainer extends Container {
       cognitoUserPoolId: securitySettingParams.cognitoUserPoolId,
       congitoRegion: securitySettingParams.cognitoRegion,
       isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,
+      cognitoAttrMapUsername: securitySettingParams.cognitoAttrMapUsername,
+      cognitoAttrMapMail: securitySettingParams.cognitoAttrMapMail,
+      cognitoAttrMapName: securitySettingParams.cognitoAttrMapName,
     });
     return response;
   }

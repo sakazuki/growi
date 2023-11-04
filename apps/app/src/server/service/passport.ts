@@ -810,6 +810,23 @@ class PassportService implements S2sMessageHandlable {
     return missingRequireds;
   }
 
+  /**
+   * reset CognitoStrategy
+   *
+   * @memberof PassportService
+   */
+
+  resetCognitoStrategy() {
+    logger.debug('CognitoStrategy: reset');
+    passport.unuse('cognito');
+    this.isCognitoStrategySetup = false;
+  }
+
+  /**
+   * setup CognitoStrategy
+   *
+   * @memberof PassportService
+   */
   setupCognitoStrategy() {
     this.resetCognitoStrategy();
 
@@ -844,10 +861,34 @@ class PassportService implements S2sMessageHandlable {
     logger.debug('CognitoStrategy: setup is done');
   }
 
-  resetCognitoStrategy() {
-    logger.debug('CognitoStrategy: reset');
-    passport.unuse('cognito');
-    this.isCognitoStrategySetup = false;
+  /**
+   * return attribute name for mapping to username of Crowi DB
+   *
+   * @returns
+   * @memberof PassportService
+   */
+  getCognitoAttrNameMappedToUsername() {
+    return this.crowi.configManager.getConfig('crowi', 'security:passport-cognito:attrMapUsername') || 'username';
+  }
+
+  /**
+   * return attribute name for mapping to name of Crowi DB
+   *
+   * @returns
+   * @memberof PassportService
+   */
+  getCognitoAttrNameMappedToName() {
+    return this.crowi.configManager.getConfig('crowi', 'security:passport-cognito:attrMapName') || 'name';
+  }
+
+  /**
+   * return attribute name for mapping to name of Crowi DB
+   *
+   * @returns
+   * @memberof PassportService
+   */
+  getCognitoAttrNameMappedToMail() {
+    return this.crowi.configManager.getConfig('crowi', 'security:passport-cognito:attrMapMail') || 'email';
   }
 
   /**

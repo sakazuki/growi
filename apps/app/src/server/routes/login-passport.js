@@ -500,6 +500,7 @@ module.exports = function(crowi, app) {
     if (!req.form.isValid) {
       return next(req.form.errors);
     }
+
     req.body = req.body.loginForm;
     const providerId = 'cognito';
     const strategyName = 'cognito';
@@ -513,11 +514,20 @@ module.exports = function(crowi, app) {
       return next(err);
     }
 
+    // it is guaranteed that username that is input from form can be acquired
+    // because this processes after authentication
+    const attrMapUsername = passportService.getCognitoAttrNameMappedToUsername();
+    const attrMapName = passportService.getCognitoAttrNameMappedToName();
+    const attrMapMail = passportService.getCognitoAttrNameMappedToMail();
+    const usernameToBeRegistered = cognitoAccountInfo[attrMapUsername];
+    const nameToBeRegistered = cognitoAccountInfo[attrMapName];
+    const mailToBeRegistered = cognitoAccountInfo[attrMapMail];
+
     const userInfo = {
       id: cognitoAccountInfo.sub,
-      username: cognitoAccountInfo.username,
-      name: cognitoAccountInfo.username,
-      email: cognitoAccountInfo.email,
+      username: usernameToBeRegistered,
+      name: nameToBeRegistered || usernameToBeRegistered,
+      email: mailToBeRegistered,
     };
 
     let externalAccount;

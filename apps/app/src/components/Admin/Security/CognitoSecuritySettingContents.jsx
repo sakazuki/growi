@@ -125,6 +125,76 @@ class CognitoSecurityManagementContents extends React.Component {
               </div>
             </div>
 
+            <h3 className="alert-anchor border-bottom">
+              Attribute Mapping ({t('security_settings.optional')})
+            </h3>
+
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
+                <strong htmlFor="attrMapUsername">{t('security_settings.form_item_name.attrMapUsername')}</strong>
+              </label>
+              <div className="col-md-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Default: username"
+                  name="attrMapUsername"
+                  defaultValue={adminCognitoSecurityContainer.state.cognitoAttrMapUsername || ''}
+                  onChange={e => adminCognitoSecurityContainer.changeAttrMapUsername(e.target.value)}
+                />
+                <p className="form-text text-muted">
+                  {/* eslint-disable-next-line react/no-danger */}
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.cognito.username_detail') }} />
+                </p>
+              </div>
+            </div>
+
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
+                <strong htmlFor="attrMapMail">{t('security_settings.form_item_name.attrMapMail')}</strong>
+              </label>
+              <div className="col-md-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Default: mail"
+                  name="attrMapMail"
+                  defaultValue={adminCognitoSecurityContainer.state.cognitoAttrMapMail || ''}
+                  onChange={e => adminCognitoSecurityContainer.changeAttrMapMail(e.target.value)}
+                />
+                <p className="form-text text-muted">
+                  <small>
+                    {t('security_settings.cognito.mail_detail')}
+                  </small>
+                </p>
+              </div>
+            </div>
+
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
+                <strong htmlFor="attrMapName">{t('Name')}</strong>
+              </label>
+              <div className="col-md-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Default: name"
+                  name="attrMapName"
+                  defaultValue={adminCognitoSecurityContainer.state.cognitoAttrMapName || ''}
+                  onChange={e => adminCognitoSecurityContainer.changeAttrMapName(e.target.value)}
+                />
+                <p className="form-text text-muted">
+                  <small>
+                    {t('security_settings.cognito.name_detail')}
+                  </small>
+                </p>
+              </div>
+            </div>
+
+            <h3 className="alert-anchor border-bottom">
+              Attribute Mapping Options ({t('security_settings.optional')})
+            </h3>
+
             <div className="row mb-5">
               <div className="offset-3 col-6 text-left">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
@@ -158,23 +228,7 @@ class CognitoSecurityManagementContents extends React.Component {
           </React.Fragment>
         )}
 
-        <hr />
-
-        <div style={{ minHeight: '300px' }}>
-          <h4>
-            <i className="icon-question" aria-hidden="true"></i>
-            <a href="#collapseHelpForCognitoAuth" data-toggle="collapse"> {t('security_settings.cognito.how_to')}</a>
-          </h4>
-          <ol id="collapseHelpForCognitoAuth" className="collapse">
-            {/* eslint-disable-next-line max-len */}
-            <li dangerouslySetInnerHTML={{ __html: t('security_settings.cognito.register_1', { link: '<a href="https://github.com/settings/developers" target=_blank>Cognito Developer Settings</a>' }) }} />
-            <li dangerouslySetInnerHTML={{ __html: t('security_settings.cognito.register_2') }} />
-            <li dangerouslySetInnerHTML={{ __html: t('security_settings.cognito.register_3') }} />
-          </ol>
-        </div>
-
       </React.Fragment>
-
 
     );
   }
