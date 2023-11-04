@@ -214,14 +214,14 @@
     },
     "cognito": {
       "enable_cognito": "Congnito を有効にする",
-      "name": "AWS Cognito",
+      "name": "Amazon Cognito",
       "client_id": "クライアントID",
       "user_pool_id": "ユーザプールID",
       "region": "リージョン",
-      "how_to": "Cognitoの設定方法",
-      "register_1": "reg1",
-      "register_2": "reg2",
-      "register_3": "reg3"
+      "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
+      "name_detail": "新規ユーザーの表示名に関連付ける属性",
+      "mail_detail": "新規ユーザーのメールアドレスに関連付ける属性",
+      "updated_cognito": "Cognito設定 を更新しました"
     },
     "form_item_name": {
       "entryPoint": "エントリーポイント",

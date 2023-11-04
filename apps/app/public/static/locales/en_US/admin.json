@@ -204,6 +204,17 @@
         "oidc": "How to configure OIDC?"
       }
     },
+    "cognito": {
+      "enable_cognito": "Enable Congnito",
+      "name": "Amazon Cognito",
+      "client_id": "ClientID",
+      "user_pool_id": "UserPoolId",
+      "region": "Region",
+      "username_detail": "Specification of mappings for <code>username</code> when creating new users",
+      "name_detail": "Specification of mappings for full name when creating new users",
+      "mail_detail": "Specification of mappings for mail address when creating new users",
+      "updated_cognito": "Succeeded to update Cognito setting"
+    },
     "form_item_name": {
       "entryPoint": "Entry point",
       "issuer": "Issuer",
